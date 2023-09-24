@@ -1,0 +1,12 @@
+[package]
+name = "sekurak_hex_gynvael"
+authors = ["Paweł Kraszewski"]
+description = "Przykładowe kody w języku Rust dla zagadnień poruszanych przez Gynvaela Coldwinda na szkoleniu HEX"
+version = "1.0.0"
+edition = "2021"
+
+[dependencies]
+
+# Możliwość robienia szablonów po generycznych liczbach
+# Nam przydatny jest trait "num::PrimInt"
+num = "^0.4"
