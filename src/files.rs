@@ -36,6 +36,12 @@ impl File {
         Ok(u8::from_be_bytes(buf))
     }
 
+    pub fn read_i8(&mut self) -> Result<i8> {
+        let mut buf = [0u8; 1];
+        self.f.read_exact(buf.as_mut())?;
+        Ok(i8::from_be_bytes(buf))
+    }
+
     pub fn read_u16be(&mut self) -> Result<u16> {
         let mut buf = [0u8; 2];
         self.f.read_exact(buf.as_mut())?;
@@ -48,6 +54,18 @@ impl File {
         Ok(u16::from_le_bytes(buf))
     }
 
+    pub fn read_i16be(&mut self) -> Result<i16> {
+        let mut buf = [0u8; 2];
+        self.f.read_exact(buf.as_mut())?;
+        Ok(i16::from_be_bytes(buf))
+    }
+
+    pub fn read_i16le(&mut self) -> Result<i16> {
+        let mut buf = [0u8; 2];
+        self.f.read_exact(buf.as_mut())?;
+        Ok(i16::from_le_bytes(buf))
+    }
+
     pub fn read_u32be(&mut self) -> Result<u32> {
         let mut buf = [0u8; 4];
         self.f.read_exact(buf.as_mut())?;
@@ -58,6 +76,18 @@ impl File {
         let mut buf = [0u8; 4];
         self.f.read_exact(buf.as_mut())?;
         Ok(u32::from_le_bytes(buf))
+    }
+
+    pub fn read_i32be(&mut self) -> Result<i32> {
+        let mut buf = [0u8; 4];
+        self.f.read_exact(buf.as_mut())?;
+        Ok(i32::from_be_bytes(buf))
+    }
+
+    pub fn read_i32le(&mut self) -> Result<i32> {
+        let mut buf = [0u8; 4];
+        self.f.read_exact(buf.as_mut())?;
+        Ok(i32::from_le_bytes(buf))
     }
 
     pub fn read_to_end(&mut self) -> Result<Vec<u8>> {
