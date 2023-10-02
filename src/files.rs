@@ -1,4 +1,5 @@
 use eyre::Result;
+use std::path::Path;
 use std::{
     fs, io,
     io::{Read, Seek, Write},
@@ -10,12 +11,18 @@ pub struct File {
 }
 
 impl File {
-    pub fn open(name: &str) -> Result<Self> {
+    pub fn open<P>(name: P) -> Result<Self>
+    where
+        P: AsRef<Path>,
+    {
         let f = fs::File::open(name)?;
         Ok(File { f })
     }
 
-    pub fn create(name: &str) -> Result<Self> {
+    pub fn create<P>(name: P) -> Result<Self>
+    where
+        P: AsRef<Path>,
+    {
         let f = fs::File::create(name)?;
         Ok(File { f })
     }

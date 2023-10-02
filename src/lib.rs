@@ -5,6 +5,8 @@ pub mod files;
 pub mod image_codec;
 pub mod masks;
 
+pub mod unzip;
+
 pub fn pokaz_liczbe<N>(liczba: N, nazwa: &str)
 where
     N: fmt::Display + fmt::LowerHex + fmt::Binary + fmt::Octal,

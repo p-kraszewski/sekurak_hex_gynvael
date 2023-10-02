@@ -19,7 +19,18 @@ num_enum = { version = "^0.7" }
 color-eyre = { version = "^0.6" }
 eyre = { version = "^0.6" }
 
-# Obsługa kompresji
-deflate = { version = "^1.0" }
+# Logi dla narzędzi, np unzip
+log="^0.4"
+env_logger = "^0.10"
 
+# Obsługa kompresji
+flate2 = { version = "^1.0" }
+
+# Liczby losowe
 rand = { version = "0.8" }
+
+# Parser argumentów
+clap = { version = "^4", features = ["derive"] }
+
+# Normalizacja ścieżek
+normalize-path = { version = "^0.2" }
