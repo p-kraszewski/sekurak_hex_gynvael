@@ -6,7 +6,8 @@ use num::PrimInt;
 ///
 /// # Arguments
 ///
-/// * `zakres`: zakres domknięty zawierający numer pierwszego i ostatniego bitu włącznie
+/// * `zakres`: zakres domknięty zawierający numer pierwszego i ostatniego bitu
+///   włącznie
 ///
 /// returns: N wynikowa maska
 ///
@@ -15,15 +16,15 @@ use num::PrimInt;
 /// ```
 /// use sekurak_hex_gynvael::masks::maska_z_zakresu;
 /// //           7654_3210
-/// assert_eq!(0b0000_1110, maska_z_zakresu::<u8>(1..=3));
-/// assert_eq!(0b0001_1100, maska_z_zakresu::<u8>(2..=4));
-/// assert_eq!(0b0000_0011, maska_z_zakresu::<u8>(0..=1));
-/// assert_eq!(0b1111_1111, maska_z_zakresu::<u8>(0..=7));
+/// assert_eq!(0b0000_1110, maska_z_zakresu::<u8>(1 ..= 3));
+/// assert_eq!(0b0001_1100, maska_z_zakresu::<u8>(2 ..= 4));
+/// assert_eq!(0b0000_0011, maska_z_zakresu::<u8>(0 ..= 1));
+/// assert_eq!(0b1111_1111, maska_z_zakresu::<u8>(0 ..= 7));
 /// // Odwrócone maski
-/// assert_eq!(0b0000_1110, maska_z_zakresu::<u8>(3..=1));
-/// assert_eq!(0b0001_1100, maska_z_zakresu::<u8>(4..=2));
-/// assert_eq!(0b0000_0011, maska_z_zakresu::<u8>(1..=0));
-/// assert_eq!(0b1111_1111, maska_z_zakresu::<u8>(7..=0));
+/// assert_eq!(0b0000_1110, maska_z_zakresu::<u8>(3 ..= 1));
+/// assert_eq!(0b0001_1100, maska_z_zakresu::<u8>(4 ..= 2));
+/// assert_eq!(0b0000_0011, maska_z_zakresu::<u8>(1 ..= 0));
+/// assert_eq!(0b1111_1111, maska_z_zakresu::<u8>(7 ..= 0));
 /// ```
 pub fn maska_z_zakresu<N: PrimInt>(zakres: RangeInclusive<usize>) -> N {
     // Ile bitów ma mieć wynikowa liczba
@@ -31,13 +32,14 @@ pub fn maska_z_zakresu<N: PrimInt>(zakres: RangeInclusive<usize>) -> N {
 
     // Pozwala traktować zakres 1..=3 tak samo jak 3..=1.
     //
-    // Uwaga - odwrócony zakres stresuje lintera Clippy - według stdlib odwrócony zakres jest PUSTY.
+    // Uwaga - odwrócony zakres stresuje lintera Clippy - według stdlib odwrócony
+    // zakres jest PUSTY.
     let (numer_najmlodszego_bitu, numer_najstarszego_bitu) = parsuj_zakres(zakres);
 
     let dlugosc_zakresu = numer_najstarszego_bitu - numer_najmlodszego_bitu + 1;
 
-    // Rust w wersji Debug obsługuje przepełnienia przy przesunięciach (przesunięcie o więcej niż
-    // rozmiar liczby), musimy to obsłużyć
+    // Rust w wersji Debug obsługuje przepełnienia przy przesunięciach (przesunięcie
+    // o więcej niż rozmiar liczby), musimy to obsłużyć
     let wynik = if dlugosc_zakresu >= (rozmiar - 1) {
         N::max_value()
     } else {
@@ -59,7 +61,7 @@ pub fn maska_z_zakresu<N: PrimInt>(zakres: RangeInclusive<usize>) -> N {
 ///
 /// ```
 /// use sekurak_hex_gynvael::masks::czysc_pole;
-/// assert_eq!(0b_1100_0011,czysc_pole(0b_1111_1111u8,5..=2) );
+/// assert_eq!(0b_1100_0011, czysc_pole(0b_1111_1111u8, 5 ..= 2));
 /// ```
 pub fn czysc_pole<N: PrimInt>(liczba: N, zakres: RangeInclusive<usize>) -> N {
     let maska = maska_z_zakresu::<N>(zakres.clone());
@@ -82,8 +84,8 @@ pub fn czysc_pole<N: PrimInt>(liczba: N, zakres: RangeInclusive<usize>) -> N {
 /// ```
 /// use sekurak_hex_gynvael::masks::czysc_pole_in_place;
 /// let mut liczba = 0b_1111_1111_u8;
-/// czysc_pole_in_place(&mut liczba,5..=2);
-/// assert_eq!(0b_1100_0011,liczba );
+/// czysc_pole_in_place(&mut liczba, 5 ..= 2);
+/// assert_eq!(0b_1100_0011, liczba);
 /// ```
 pub fn czysc_pole_in_place<N: PrimInt>(liczba: &mut N, zakres: RangeInclusive<usize>) {
     *liczba = czysc_pole(*liczba, zakres);
@@ -102,7 +104,7 @@ pub fn czysc_pole_in_place<N: PrimInt>(liczba: &mut N, zakres: RangeInclusive<us
 ///
 /// ```
 /// use sekurak_hex_gynvael::masks::ekstrakcja;
-/// assert_eq!(0b11_00,ekstrakcja(0b_1111_0000_u8,5..=2))
+/// assert_eq!(0b11_00, ekstrakcja(0b_1111_0000_u8, 5 ..= 2))
 /// //                                 \^^^/- zakres wycięcia
 /// ```
 pub fn ekstrakcja<N: PrimInt>(liczba: N, zakres: RangeInclusive<usize>) -> N {
@@ -130,7 +132,10 @@ pub fn ekstrakcja<N: PrimInt>(liczba: N, zakres: RangeInclusive<usize>) -> N {
 ///
 /// ```
 /// use sekurak_hex_gynvael::masks::wstawienie;
-/// assert_eq!(0b_1110_1000_u8, wstawienie(0b_1111_0000_u8, 0b_0_1, 4..=3));
+/// assert_eq!(
+///     0b_1110_1000_u8,
+///     wstawienie(0b_1111_0000_u8, 0b_0_1, 4 ..= 3)
+/// );
 /// //               \_/                         \_/           \_/ To wstawiamy
 /// //                Wynik                       Tu wstawiamy
 /// ```
@@ -144,8 +149,8 @@ pub fn wstawienie<N: PrimInt>(liczba: N, wartosc: N, zakres: RangeInclusive<usiz
     // Zrobienie "dziury" na dane.  W Rust `!` to negacja bitowa
     let wymaskowane_wejscie = liczba & !maska;
 
-    // Wstawienie nowej, przesuniętej i przyciętej wartości. Przycięcie, żeby potencjalnie za duże
-    // dane nie "wylały" się poza przygotowaną dziurę.
+    // Wstawienie nowej, przesuniętej i przyciętej wartości. Przycięcie, żeby
+    // potencjalnie za duże dane nie "wylały" się poza przygotowaną dziurę.
     let dane = (wartosc << najmlodszy) & maska;
 
     // Suma logiczna
@@ -166,18 +171,20 @@ pub fn wstawienie<N: PrimInt>(liczba: N, wartosc: N, zakres: RangeInclusive<usiz
 /// ```
 /// use sekurak_hex_gynvael::masks::wstawienie_in_place;
 /// let mut liczba = 0b_1111_0000_u8;
-/// wstawienie_in_place(&mut liczba, 0b_0_1, 4..=3);
+/// wstawienie_in_place(&mut liczba, 0b_0_1, 4 ..= 3);
 /// assert_eq!(0b_1110_1000_u8, liczba);
 /// ```
 pub fn wstawienie_in_place<N: PrimInt>(liczba: &mut N, wartosc: N, zakres: RangeInclusive<usize>) {
     *liczba = wstawienie(*liczba, wartosc, zakres);
 }
 
-/// Parsuje standardowe zakresy domknięte. Pozwala traktować zakres 1..=3 tak samo jak 3..=1.
+/// Parsuje standardowe zakresy domknięte. Pozwala traktować zakres 1..=3 tak
+/// samo jak 3..=1.
 ///
 /// # Arguments
 ///
-/// * `zakres`: zakres domknięty zawierający numer pierwszego i ostatniego bitu włącznie
+/// * `zakres`: zakres domknięty zawierający numer pierwszego i ostatniego bitu
+///   włącznie
 ///
 /// returns: (numer_najmłodszego_bitu: usize, numer_najstarszego_bitu: usize)
 ///
@@ -185,13 +192,14 @@ pub fn wstawienie_in_place<N: PrimInt>(liczba: &mut N, wartosc: N, zakres: Range
 ///
 /// ```
 /// use sekurak_hex_gynvael::masks::parsuj_zakres;
-/// assert_eq!((1,3),parsuj_zakres(3..=1));
-/// assert_eq!((1,3),parsuj_zakres(1..=3));
+/// assert_eq!((1, 3), parsuj_zakres(3 ..= 1));
+/// assert_eq!((1, 3), parsuj_zakres(1 ..= 3));
 /// ```
 pub fn parsuj_zakres(zakres: RangeInclusive<usize>) -> (usize, usize) {
     // Pozwala traktować zakres 1..=3 tak samo jak 3..=1.
     //
-    // Uwaga - odwrócony zakres stresuje lintera Clippy - według stdlib odwrócony zakres jest PUSTY.
+    // Uwaga - odwrócony zakres stresuje lintera Clippy - według stdlib odwrócony
+    // zakres jest PUSTY.
     if zakres.end() > zakres.start() {
         (*zakres.start(), *zakres.end())
     } else {

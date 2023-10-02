@@ -10,3 +10,10 @@ edition = "2021"
 # Możliwość robienia szablonów po generycznych liczbach
 # Nam przydatny jest trait "num::PrimInt"
 num = "^0.4"
+
+# Możliwość robienia ENUM-ów z rzutowaniem na/z typów
+# całkowitych
+num_enum = { version = "^0.7" }
+
+# Bardziej sensowna obsługa błędów
+color-eyre = { version = "^0.6" }

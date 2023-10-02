@@ -1,10 +1,13 @@
-fn main() {
+use color_eyre::eyre::Result;
+fn main() -> Result<()> {
+    color_eyre::install()?;
+
     // Rust ma wbudowane konwersje int <-> ciąg bajtów BE/LE
 
     // Z bajtów Little Endian
-    // Uwaga! argument X::from_le_bytes to rzadko (w sumie) używana w Rust sztywna tablica `[u8;2]`,
-    // `[u8;4]`, itd (zależnie od typu docelowego), *NIE* tzw. slice. `&[u8]` albo wektor
-    // `Vec::<u8>`!
+    // Uwaga! argument X::from_le_bytes to rzadko (w sumie) używana w Rust sztywna
+    // tablica `[u8;2]`, `[u8;4]`, itd (zależnie od typu docelowego), *NIE* tzw.
+    // slice. `&[u8]` albo wektor `Vec::<u8>`!
     assert_eq!(0xF6AE, u16::from_le_bytes([0xAE, 0xF6]));
 
     // Z little/big endian na bajty. Tak samo, zwracana jest sztywna tablica.
@@ -19,6 +22,8 @@ fn main() {
         0x4a, 0x9c, 0x28, 0x81, 0x2f, 0xa6, 0xfb, 0xb6, 0x64, 0x6d, 0xb0, 0x99, 0x4a, 0x40, 0xbb,
         0x0e,
     ]);
+
+    Ok(())
 }
 
 fn parsuj_szereg_u16_le(dane: &[u8]) {
@@ -27,8 +32,8 @@ fn parsuj_szereg_u16_le(dane: &[u8]) {
         if dwubajt.len() != 2 {
             println!("Dane mają nieparzystą długość!");
         } else {
-            // Rust nie ma ładnej składni konwersji slice'a `&[u8]` na tablicę `[u8;N]`. Nie chcę
-            // psuć krajobrazu transmutacją.
+            // Rust nie ma ładnej składni konwersji slice'a `&[u8]` na tablicę `[u8;N]`. Nie
+            // chcę psuć krajobrazu transmutacją.
             let mut bajty = [0u8; 2];
 
             // Rozmiar tablicy i slice'a *musi* być jednakowy, inaczej stdlib panikuje.
@@ -40,7 +45,8 @@ fn parsuj_szereg_u16_le(dane: &[u8]) {
             // Wynik
             println!("{dwubajt:02x?} -> 0x{liczba:04x}={liczba}");
             //         ^^^^^^^^^^^^
-            //         Wyświetlenie tablicy jako ciąg hex (trait `std::fmt::Debug`).
+            //         Wyświetlenie tablicy jako ciąg hex (trait
+            //         `std::fmt::Debug`).
         }
     }
 }

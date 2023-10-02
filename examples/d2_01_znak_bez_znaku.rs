@@ -22,8 +22,8 @@ fn parsuj_szereg_i16_le(dane: &[u8]) {
         if dwubajt.len() != 2 {
             println!("Dane mają nieparzystą długość!");
         } else {
-            // Rust nie ma ładnej składni konwersji slice'a `&[u8]` na tablicę `[u8;N]`. Nie chcę
-            // psuć krajobrazu transmutacją.
+            // Rust nie ma ładnej składni konwersji slice'a `&[u8]` na tablicę `[u8;N]`. Nie
+            // chcę psuć krajobrazu transmutacją.
             let mut bajty = [0u8; 2];
 
             // Rozmiar tablicy i slice'a *musi* być jednakowy, inaczej stdlib panikuje.
@@ -35,7 +35,8 @@ fn parsuj_szereg_i16_le(dane: &[u8]) {
             // Wynik
             println!("{dwubajt:02x?} -> 0x{liczba:04x}={liczba}");
             //         ^^^^^^^^^^^^
-            //         Wyświetlenie tablicy jako ciąg hex (trait `std::fmt::Debug`).
+            //         Wyświetlenie tablicy jako ciąg hex (trait
+            // `std::fmt::Debug`).
         }
     }
 }

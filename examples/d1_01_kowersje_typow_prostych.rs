@@ -1,15 +1,18 @@
-// Linter CLIPPY jest dość wnikliwy. Musimy powyłączać parę warningów, które absolutnie mają sens w
-// kodzie produkcyjnym
+// Linter CLIPPY jest dość wnikliwy. Musimy powyłączać parę warningów, które
+// absolutnie mają sens w kodzie produkcyjnym
 
 // Clippy widzi, że obie stałe liczbowe w assert_eq! są sobie równe.
 #![allow(clippy::eq_op)]
 // Clippy marudzi, że w przykładzie z "kładką" grupy cyfr dwójkowych nie mają jednakowych rozmiarów
 #![allow(clippy::unusual_byte_groupings)]
+use color_eyre::eyre::Result;
 use sekurak_hex_gynvael::pokaz_liczbe;
 
-fn main() {
-    // Jeżeli programista nie powie inaczej, a kompilator nie ma innych wskazówek (inferencja
-    // typów), przyjmowany jest i32 (32 bitowa liczba ze znakiem)
+fn main() -> Result<()> {
+    color_eyre::install()?;
+
+    // Jeżeli programista nie powie inaczej, a kompilator nie ma innych wskazówek
+    // (inferencja typów), przyjmowany jest i32 (32 bitowa liczba ze znakiem)
 
     // Konwersje na wejściu
     assert_eq!(0b111, 7, "Konwersja z liczby dwójkowej");
@@ -46,4 +49,6 @@ fn main() {
     pokaz_liczbe(u128::MAX, "Maksymalne 128 bitów bez znaku");
     pokaz_liczbe(i128::MIN, "Minimalne 128 bitów ze znakiem");
     pokaz_liczbe(i128::MAX, "Maksymalne 128 bitów ze znakiem");
+
+    Ok(())
 }
