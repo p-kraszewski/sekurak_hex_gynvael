@@ -1,6 +1,7 @@
 use std::fmt;
 
 pub mod conversions;
+pub mod image_codec;
 pub mod masks;
 
 pub fn pokaz_liczbe<N>(liczba: N, nazwa: &str)
