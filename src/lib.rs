@@ -1,6 +1,7 @@
 use std::fmt;
 
 pub mod conversions;
+pub mod files;
 pub mod image_codec;
 pub mod masks;
 

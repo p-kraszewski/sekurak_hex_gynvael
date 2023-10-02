@@ -1,0 +1,15 @@
+This isn't really a file format.
+It's just a test structure.
+
+offset    type      name
+0         uint8     a
+1         int8      b
+2         uint16le  c
+4         int16le   d
+6         uint32le  e
+0x0a      int32le   f
+0x0e      uint16be  g
+0x10      int16be   h
+0x12      uint32be  i
+0x16      int32be   j
+

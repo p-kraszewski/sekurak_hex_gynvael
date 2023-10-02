@@ -17,6 +17,9 @@ num_enum = { version = "^0.7" }
 
 # Bardziej sensowna obsługa błędów
 color-eyre = { version = "^0.6" }
+eyre = { version = "^0.6" }
 
 # Obsługa kompresji
 deflate = { version = "^1.0" }
+
+rand = { version = "0.8" }

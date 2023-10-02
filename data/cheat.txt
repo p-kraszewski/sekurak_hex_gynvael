@@ -1,0 +1,90 @@
+Given an array of bytes decode the bytes at offset 0
+as a given type.
+
+This is simplified pseudocode!
+  uint8,int16,etc in the code are type hints (note how at time a larger type is
+  used!)
+  xyz as type is type conversion (some language need conversions)
+
+Warning:
+  Different programming languages have different quirks and you might run into
+  language-specific issues. This is true for a lot of languages, especially
+  once you start approaching unsigned 32-bit types and higher.
+
+
+Decode as uint8:
+  # Nothing much to do.
+  value : uint8 = bytes[0]
+  return value
+
+Decode as int8:
+  value : int16 = bytes[0]
+  if (value & 0x80) != 0:
+    value = value - 0x100
+  return value
+
+
+Decode as uint16le:
+  value : uint16 = bytes[0]
+  value |= (bytes[1] as uint16) << 8
+  return value
+
+Decode as uint16be:
+  # This literally has just flipped [0] and [1].
+  value : uint16 = bytes[1]
+  value |= (bytes[0] as uint16) << 8
+  return value
+
+Decode as int16le:
+  value : int32 = bytes[0]
+  value |= (bytes[1] as uint16) << 8
+  if (value & 0x8000) != 0:
+    value = value - 0x10000
+  return value
+
+Decode as int16be:
+  # This literally has just flipped [0] and [1].
+  value : int32 = bytes[1]
+  value |= (bytes[0] as uint16) << 8
+  if (value & 0x8000) != 0:
+    value = value - 0x10000
+  return value
+
+
+Decode as uint32le:
+  value : uint32 = bytes[0]
+  value |= (bytes[1] as uint32) << 8
+  value |= (bytes[2] as uint32) << 16
+  value |= (bytes[3] as uint32) << 24
+  return value
+
+Decode as uint32be:
+  # This literally has just reverse bytes (0-3 to 3-0).
+  value : uint32 = bytes[3]
+  value |= (bytes[2] as uint32) << 8
+  value |= (bytes[1] as uint32) << 16
+  value |= (bytes[0] as uint32) << 24
+  return value
+
+Decode as int32le:
+  value : int64 = bytes[0]
+  value |= (bytes[1] as uint32) << 8
+  value |= (bytes[2] as uint32) << 16
+  value |= (bytes[3] as uint32) << 24
+
+  if (value & 0x80000000) != 0:
+    value = value - 0x100000000
+  return value
+
+Decode as int32be:
+  # This literally has just reverse bytes (0-3 to 3-0).
+  value : int64 = bytes[3]
+  value |= (bytes[2] as uint32) << 8
+  value |= (bytes[1] as uint32) << 16
+  value |= (bytes[0] as uint32) << 24
+
+  if (value & 0x80000000) != 0:
+    value = value - 0x100000000
+  return value
+
+
