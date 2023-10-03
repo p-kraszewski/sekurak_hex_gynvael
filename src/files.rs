@@ -96,6 +96,30 @@ impl File {
         Ok(i32::from_le_bytes(buf))
     }
 
+    pub fn read_u64be(&mut self) -> Result<u64> {
+        let mut buf = [0u8; 8];
+        self.f.read_exact(buf.as_mut())?;
+        Ok(u64::from_be_bytes(buf))
+    }
+
+    pub fn read_u64le(&mut self) -> Result<u64> {
+        let mut buf = [0u8; 8];
+        self.f.read_exact(buf.as_mut())?;
+        Ok(u64::from_le_bytes(buf))
+    }
+
+    pub fn read_i64be(&mut self) -> Result<i64> {
+        let mut buf = [0u8; 8];
+        self.f.read_exact(buf.as_mut())?;
+        Ok(i64::from_be_bytes(buf))
+    }
+
+    pub fn read_i64le(&mut self) -> Result<i64> {
+        let mut buf = [0u8; 8];
+        self.f.read_exact(buf.as_mut())?;
+        Ok(i64::from_le_bytes(buf))
+    }
+
     pub fn read_to_end(&mut self) -> Result<Vec<u8>> {
         let mut buf = Vec::with_capacity(1500);
         self.f.read_to_end(&mut buf)?;
@@ -122,5 +146,116 @@ impl File {
     pub fn write_exact(&mut self, data: &[u8]) -> Result<()> {
         self.f.write_all(data)?;
         Ok(())
+    }
+}
+pub mod LE {
+    use super::File;
+    use eyre::Result;
+    pub trait BinReader<T> {
+        fn binread(&mut self) -> Result<T>;
+    }
+
+    impl BinReader<u8> for File {
+        fn binread(&mut self) -> Result<u8> {
+            self.read_u8()
+        }
+    }
+
+    impl BinReader<u16> for File {
+        fn binread(&mut self) -> Result<u16> {
+            self.read_u16le()
+        }
+    }
+
+    impl BinReader<u32> for File {
+        fn binread(&mut self) -> Result<u32> {
+            self.read_u32le()
+        }
+    }
+
+    impl BinReader<u64> for File {
+        fn binread(&mut self) -> Result<u64> {
+            self.read_u64le()
+        }
+    }
+
+    impl BinReader<i8> for File {
+        fn binread(&mut self) -> Result<i8> {
+            self.read_i8()
+        }
+    }
+
+    impl BinReader<i16> for File {
+        fn binread(&mut self) -> Result<i16> {
+            self.read_i16le()
+        }
+    }
+
+    impl BinReader<i32> for File {
+        fn binread(&mut self) -> Result<i32> {
+            self.read_i32le()
+        }
+    }
+
+    impl BinReader<i64> for File {
+        fn binread(&mut self) -> Result<i64> {
+            self.read_i64le()
+        }
+    }
+}
+
+pub mod BE {
+    use super::File;
+    use eyre::Result;
+    pub trait BinReader<T> {
+        fn binread(&mut self) -> Result<T>;
+    }
+
+    impl BinReader<u8> for File {
+        fn binread(&mut self) -> Result<u8> {
+            self.read_u8()
+        }
+    }
+
+    impl BinReader<u16> for File {
+        fn binread(&mut self) -> Result<u16> {
+            self.read_u16be()
+        }
+    }
+
+    impl BinReader<u32> for File {
+        fn binread(&mut self) -> Result<u32> {
+            self.read_u32be()
+        }
+    }
+
+    impl BinReader<u64> for File {
+        fn binread(&mut self) -> Result<u64> {
+            self.read_u64be()
+        }
+    }
+
+    impl BinReader<i8> for File {
+        fn binread(&mut self) -> Result<i8> {
+            self.read_i8()
+        }
+    }
+
+    impl BinReader<i16> for File {
+        fn binread(&mut self) -> Result<i16> {
+            self.read_i16be()
+        }
+    }
+
+    impl BinReader<i32> for File {
+        fn binread(&mut self) -> Result<i32> {
+            self.read_i32be()
+        }
+    }
+
+    impl BinReader<i64> for File {
+        fn binread(&mut self) -> Result<i64> {
+            self.read_i64be()
+        }
     }
 }

@@ -1,7 +1,7 @@
 use clap::Parser;
 use env_logger::Env;
 use eyre::Result;
-use log::debug;
+use log::{debug, error};
 
 use sekurak_hex_gynvael::image_codec as ic;
 
@@ -11,7 +11,7 @@ use sekurak_hex_gynvael::image_codec as ic;
 #[command(version = "1.0")]
 #[command(about = "Simple UNZIP implementation", long_about = None)]
 struct Args {
-    #[arg(short, long, default_value = "data/sing_scape.bmp")]
+    #[arg(short, long, default_value = "data/sing_scape.broken.bmp")]
     /// Input ZIP file
     in_file: String,
 
@@ -36,7 +36,13 @@ fn main() -> Result<()> {
         .format_timestamp(None)
         .init();
 
-    let img = ic::bmp::read_bmp(&args.in_file)?;
+    let img = match ic::bmp::read_bmp(&args.in_file) {
+        Ok(img) => img,
+        Err(e) => {
+            error!("{}", e);
+            return Ok(());
+        }
+    };
 
     ic::raw::write_raw(&args.out_file, &img)?;
 

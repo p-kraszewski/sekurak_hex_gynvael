@@ -1,6 +1,7 @@
 #![allow(non_snake_case)]
 
 use crate::files;
+use crate::files::LE::BinReader;
 use color_eyre::eyre::Result;
 use eyre::{eyre, WrapErr};
 use log::debug;
@@ -9,10 +10,7 @@ use std::io::SeekFrom;
 // Wciągnięcie wszystkich struktur z modułu nadrzędnego
 use super::*;
 
-enum Compression {
-    BI_RGB,
-    BI_BITFIELDS,
-}
+const BM_MAGIC: u16 = 0x4D42;
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
@@ -26,7 +24,7 @@ pub struct BitmapFileHeader {
 
 impl Validate for BitmapFileHeader {
     fn validate(&self) -> Result<()> {
-        if self.bfType != 0x424f {
+        if self.bfType != BM_MAGIC {
             return Err(eyre!("Invalid BMP magic"));
         }
         Ok(())
@@ -51,6 +49,36 @@ struct BitmapInfoHeader {
 
 impl Validate for BitmapInfoHeader {
     fn validate(&self) -> Result<()> {
+        if self.biSize != 40 {
+            return Err(eyre!("Invalid BIH size"));
+        }
+        if self.biWidth < 0 {
+            return Err(eyre!("Negative image width"));
+        }
+
+        if self.biWidth > 0xFFFF {
+            return Err(eyre!("Width overflow"));
+        }
+        if self.biHeight > 0xFFFF || self.biHeight < -0xFFFF {
+            return Err(eyre!("Height overflow"));
+        }
+
+        if ![1u16, 2, 4, 8, 16, 24].contains(&self.biBitCount) {
+            return Err(eyre!("Invalid bit depth"));
+        }
+
+        if self.biClrUsed > 256 {
+            return Err(eyre!("Oversize palette"));
+        }
+
+        if self.biClrUsed < self.biClrImportant {
+            return Err(eyre!("Important > Used pallete"));
+        }
+
+        if self.biCompression != 0 {
+            return Err(eyre!("Unsupported palette"));
+        }
+
         Ok(())
     }
 }
@@ -106,28 +134,28 @@ impl BMP {
     pub fn read_bfh(&mut self) -> Result<BitmapFileHeader> {
         let f = &mut self.file;
         Ok(BitmapFileHeader {
-            bfType: f.read_u16le()?,
-            bfSize: f.read_u32le()?,
-            bfReserved1: f.read_u16le()?,
-            bfReserved2: f.read_u16le()?,
-            bfOffBits: f.read_u32le()?,
+            bfType: f.binread()?,
+            bfSize: f.binread()?,
+            bfReserved1: f.binread()?,
+            bfReserved2: f.binread()?,
+            bfOffBits: f.binread()?,
         })
     }
 
     pub fn read_bih(&mut self) -> Result<BitmapInfoHeader> {
         let f = &mut self.file;
         Ok(BitmapInfoHeader {
-            biSize: f.read_u32le()?,
-            biWidth: f.read_i32le()?,
-            biHeight: f.read_i32le()?,
-            biPlanes: f.read_u16le()?,
-            biBitCount: f.read_u16le()?,
-            biCompression: f.read_u32le()?,
-            biSizeImage: f.read_u32le()?,
-            biXPelsPerMeter: f.read_i32le()?,
-            biYPelsPerMeter: f.read_i32le()?,
-            biClrUsed: f.read_u32le()?,
-            biClrImportant: f.read_u32le()?,
+            biSize: f.binread()?,
+            biWidth: f.binread()?,
+            biHeight: f.binread()?,
+            biPlanes: f.binread()?,
+            biBitCount: f.binread()?,
+            biCompression: f.binread()?,
+            biSizeImage: f.binread()?,
+            biXPelsPerMeter: f.binread()?,
+            biYPelsPerMeter: f.binread()?,
+            biClrUsed: f.binread()?,
+            biClrImportant: f.binread()?,
         })
     }
 
@@ -157,6 +185,10 @@ impl BMP {
             let line = f.read_as_vec(xs as usize)?;
             if xs % 4 != 0 {
                 f.read_as_vec(xs as usize % 4)?;
+            }
+
+            if line.iter().any(|idx| *idx as usize >= pal.len()) {
+                return Err(eyre!("Color byond palette"));
             }
             let scanline = line
                 .iter()
