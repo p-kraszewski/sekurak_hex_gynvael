@@ -3,7 +3,6 @@ use std::path::Path;
 use std::{
     fs, io,
     io::{Read, Seek, Write},
-    mem,
 };
 
 pub struct File {
